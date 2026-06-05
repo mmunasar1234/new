@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Index — Martiqaad Aroos</title>
+  <link rel="stylesheet" href="theme.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <script src="wedding-base.js"></script>
+  <script src="wedding-store.js"></script>
+  <script src="image-tools.js"></script>
+  <script src="qr-lib.js"></script>
+  <style>.qr-outline-btn { color: var(--gold) !important; border-color: var(--gold) !important; }</style>
+</head>
+<body class="admin">
+
+  <div class="top-bar">
+    <div>
+      <h1>Martiqaad Aroos</h1>
+      <p class="brand-sub">Admin Panel — Index</p>
+    </div>
+    <div class="top-links">
+      <a href="home.html">Home</a>
+      <a href="class.html">Martiqaadka</a>
+      <a href="scan.html">QR Scan</a>
+    </div>
+  </div>
+
+  <div class="admin-hero">
+    <p class="ornament">&#10022; &#10022; &#10022;</p>
+    <h2 id="heroTitle">Abuur Martiqaadkaaga</h2>
+    <p>Geli magacyada, sawirrada, muusig — QR code si toos ah ayuu u soo baxaa</p>
+  </div>
+
+  <div class="admin-steps">
+    <span class="active">1. Xogta</span>
+    <span class="active">2. Sawirrada</span>
+    <span class="active">3. QR Code</span>
+  </div>
+
+  <div class="wrap">
+
+    <!-- QR CODE — SOO BAXA TOOS -->
+    <div class="card qr-card">
+      <h2><span class="icon">&#9632;</span> QR Code</h2>
+      <div class="qr-layout">
+        <div class="qr-box" id="qrOutput"></div>
+        <div class="qr-info">
+          <p class="names-display" id="qrNames">Ahmed &amp; Amina</p>
+          <p>QR code-kan scan garee telefoonka si martida u aragto martiqaadka. Waxaa si toos ah u cusboonaysan markaad kaydiso xogta.</p>
+          <div class="btn-row">
+            <button type="button" class="btn btn-gold" id="btnSave">Kaydi &amp; Cusbooneysii QR</button>
+            <button type="button" class="btn btn-outline qr-outline-btn" id="btnDownloadQR">Soo Dejiso QR</button>
+            <button type="button" class="btn btn-outline qr-outline-btn" id="btnCopyLink">Copy Link</button>
+            <button type="button" class="btn btn-dark" id="btnPreview">Arag Martiqaadka</button>
+          </div>
+          <div id="status" class="status"></div>
+        </div>
+      </div>
+    </div>
+
+    <form id="weddingForm" onsubmit="return false;">
+
+      <div class="card">
+        <h2><span class="icon">&#9825;</span> Magacyada</h2>
+        <div class="grid2">
+          <div>
+            <label>Magaca Arooska (Wiilka)</label>
+            <input type="text" id="groom" required />
+          </div>
+          <div>
+            <label>Magaca Aroosadda (Gabadha)</label>
+            <input type="text" id="bride" required />
+          </div>
+        </div>
+        <label>Initials (tusaale: A &amp; A)</label>
+        <input type="text" id="initials" />
+        <div class="grid2">
+          <div>
+            <label>Taariikhda</label>
+            <input type="text" id="heroDate" placeholder="15 Juun 2026" />
+          </div>
+          <div>
+            <label>Waqtiga</label>
+            <input type="text" id="heroTime" placeholder="6:00 Galabnimo" />
+          </div>
+        </div>
+        <label>Countdown Date</label>
+        <input type="datetime-local" id="countdownDate" />
+        <label style="margin-top:0.5rem">Key (magaca kaydka)</label>
+        <input type="text" id="storageKey" value="index" />
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#9873;</span> Goobta</h2>
+        <label>Magaca Goobta</label>
+        <input type="text" id="venueName" />
+        <label>Cinwaanka</label>
+        <input type="text" id="venueAddress" />
+        <label>Link Khariidadda (Google Maps)</label>
+        <input type="text" id="venueMapUrl" placeholder="https://maps.google.com/..." />
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#10077;</span> Sheekada Jacaylka</h2>
+        <label>Qoraalka</label>
+        <textarea id="loveQuote"></textarea>
+        <label>Saxiixa</label>
+        <input type="text" id="loveSign" />
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#9786;</span> Sawirrada — Edit &amp; Beddel</h2>
+
+        <div class="img-edit">
+          <p class="img-edit-label">Sawirka Hero (Background Weyn)</p>
+          <div class="img-preview-wrap wide">
+            <img id="heroBgPreview" class="img-preview wide-img empty" alt="" />
+            <div id="heroBgPlaceholder" class="img-placeholder wide-ph">+</div>
+          </div>
+          <div class="img-actions">
+            <button type="button" class="btn btn-gold btn-sm" onclick="pickImage('heroBgFile')">Beddel Sawir</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('heroBg')">Tirtir</button>
+          </div>
+          <input type="file" id="heroBgFile" accept="image/*" />
+        </div>
+
+        <div class="grid2">
+          <div class="img-edit">
+            <p class="img-edit-label">Sawirka Arooska</p>
+            <div class="img-preview-wrap">
+              <img id="groomPhotoPreview" class="img-preview circle empty" alt="" />
+              <div id="groomPhotoPlaceholder" class="img-placeholder">+</div>
+            </div>
+            <div class="img-actions">
+              <button type="button" class="btn btn-gold btn-sm" onclick="pickImage('groomPhotoFile')">Beddel</button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('groom')">Tirtir</button>
+            </div>
+            <input type="file" id="groomPhotoFile" accept="image/*" />
+            <label style="margin-top:0.75rem">Doorka</label>
+            <input type="text" id="groomRole" placeholder="Arooski" />
+            <label>Sharaxaad</label>
+            <input type="text" id="groomDesc" placeholder="Wiilka arooska" />
+          </div>
+
+          <div class="img-edit">
+            <p class="img-edit-label">Sawirka Aroosadda</p>
+            <div class="img-preview-wrap">
+              <img id="bridePhotoPreview" class="img-preview circle empty" alt="" />
+              <div id="bridePhotoPlaceholder" class="img-placeholder">+</div>
+            </div>
+            <div class="img-actions">
+              <button type="button" class="btn btn-gold btn-sm" onclick="pickImage('bridePhotoFile')">Beddel</button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('bride')">Tirtir</button>
+            </div>
+            <input type="file" id="bridePhotoFile" accept="image/*" />
+            <label style="margin-top:0.75rem">Doorka</label>
+            <input type="text" id="brideRole" placeholder="Aroosadda" />
+            <label>Sharaxaad</label>
+            <input type="text" id="brideDesc" placeholder="Gabadha arooska" />
+          </div>
+        </div>
+
+        <p class="img-edit-label" style="margin-top:1rem">Gallery — Guji + si aad u darto, × si aad u tirtirto</p>
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <input type="file" id="galleryFiles" accept="image/*" multiple />
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#9835;</span> Muusig</h2>
+        <div class="music-box">
+          <span class="music-icon">&#9835;</span>
+          <div class="music-info">
+            <p id="musicName">Muusig ma jiro — soo geli fayl MP3</p>
+          </div>
+          <button type="button" class="btn btn-gold btn-sm" onclick="pickImage('musicFile')">Soo Geli</button>
+          <button type="button" class="btn btn-danger btn-sm" id="btnRemoveMusic">Tirtir</button>
+          <input type="file" id="musicFile" accept="audio/*" />
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    const status = document.getElementById('status');
+    let currentData = WeddingBase.defaultConfig();
+    let galleryImages = [];
+    let lastQrUrl = '';
+
+    function showStatus(msg, ok) {
+      status.textContent = msg;
+      status.className = 'status ' + (ok ? 'ok' : 'err');
+    }
+
+    function pickImage(inputId) {
+      document.getElementById(inputId).click();
+    }
+
+    function showPreview(imgId, phId, url) {
+      const img = document.getElementById(imgId);
+      const ph = document.getElementById(phId);
+      if (url) {
+        img.src = url;
+        img.classList.remove('empty');
+        if (ph) ph.style.display = 'none';
+      } else {
+        img.src = '';
+        img.classList.add('empty');
+        if (ph) ph.style.display = 'flex';
+      }
+    }
+
+    function removeImage(type) {
+      if (type === 'heroBg') {
+        currentData.heroBg = '';
+        showPreview('heroBgPreview', 'heroBgPlaceholder', '');
+      } else if (type === 'groom') {
+        if (currentData.couple) currentData.couple[0].photo = '';
+        showPreview('groomPhotoPreview', 'groomPhotoPlaceholder', '');
+      } else if (type === 'bride') {
+        if (currentData.couple) currentData.couple[1].photo = '';
+        showPreview('bridePhotoPreview', 'bridePhotoPlaceholder', '');
+      }
+      autoSaveAndQR();
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      let html = galleryImages.map(function (src, i) {
+        return '<div class="gallery-item-edit">' +
+          '<img src="' + src + '" alt="">' +
+          '<div class="gal-actions">' +
+          '<button type="button" title="Kor" onclick="moveGallery(' + i + ',-1)">&#8593;</button>' +
+          '<button type="button" title="Hoos" onclick="moveGallery(' + i + ',1)">&#8595;</button>' +
+          '<button type="button" title="Beddel" onclick="replaceGallery(' + i + ')">&#9998;</button>' +
+          '<button type="button" title="Tirtir" onclick="deleteGallery(' + i + ')">&#10005;</button>' +
+          '</div></div>';
+      }).join('');
+      html += '<div class="gallery-add" onclick="pickImage(\'galleryFiles\')" title="Ku dar sawir">+</div>';
+      grid.innerHTML = html;
+    }
+
+    window.moveGallery = function (i, dir) {
+      const j = i + dir;
+      if (j < 0 || j >= galleryImages.length) return;
+      const tmp = galleryImages[i];
+      galleryImages[i] = galleryImages[j];
+      galleryImages[j] = tmp;
+      renderGallery();
+      autoSaveAndQR();
+    };
+
+    window.deleteGallery = function (i) {
+      galleryImages.splice(i, 1);
+      renderGallery();
+      autoSaveAndQR();
+    };
+
+    let replaceGalleryIdx = -1;
+    window.replaceGallery = function (i) {
+      replaceGalleryIdx = i;
+      const inp = document.createElement('input');
+      inp.type = 'file';
+      inp.accept = 'image/*';
+      inp.onchange = async function () {
+        if (!inp.files[0]) return;
+        galleryImages[i] = await ImageTools.fileToDataUrl(inp.files[0], 600, 600);
+        renderGallery();
+        autoSaveAndQR();
+      };
+      inp.click();
+    };
+
+    function loadForm(data) {
+      document.getElementById('groom').value = data.groom || '';
+      document.getElementById('bride').value = data.bride || '';
+      document.getElementById('initials').value = data.initials || '';
+      document.getElementById('heroDate').value = data.heroDate || '';
+      document.getElementById('heroTime').value = data.heroTime || '';
+      if (data.countdownDate) {
+        const d = new Date(data.countdownDate);
+        if (!isNaN(d)) document.getElementById('countdownDate').value = d.toISOString().slice(0, 16);
+      }
+      document.getElementById('venueName').value = data.venueName || '';
+      document.getElementById('venueAddress').value = data.venueAddress || '';
+      document.getElementById('venueMapUrl').value = data.venueMapUrl || '';
+      document.getElementById('loveQuote').value = data.loveQuote || '';
+      document.getElementById('loveSign').value = data.loveSign || '';
+      if (data.couple) {
+        document.getElementById('groomRole').value = data.couple[0]?.role || '';
+        document.getElementById('groomDesc').value = data.couple[0]?.desc || '';
+        document.getElementById('brideRole').value = data.couple[1]?.role || '';
+        document.getElementById('brideDesc').value = data.couple[1]?.desc || '';
+        showPreview('groomPhotoPreview', 'groomPhotoPlaceholder', data.couple[0]?.photo || '');
+        showPreview('bridePhotoPreview', 'bridePhotoPlaceholder', data.couple[1]?.photo || '');
+      }
+      showPreview('heroBgPreview', 'heroBgPlaceholder', data.heroBg || '');
+      galleryImages = data.gallery ? data.gallery.slice() : [];
+      renderGallery();
+      if (data.musicUrl) {
+        document.getElementById('musicName').textContent = 'Muusig waa la kaydiyay ✓';
+      }
+      updateQrNames();
+    }
+
+    function updateQrNames() {
+      const g = document.getElementById('groom').value.trim() || 'Ahmed';
+      const b = document.getElementById('bride').value.trim() || 'Amina';
+      document.getElementById('qrNames').textContent = g + ' & ' + b;
+      const ht = document.getElementById('heroTitle');
+      if (ht) ht.textContent = g + ' & ' + b;
+    }
+
+    function collectData() {
+      const groom = document.getElementById('groom').value.trim();
+      const bride = document.getElementById('bride').value.trim();
+      const cd = document.getElementById('countdownDate').value;
+      if (!currentData.couple) currentData.couple = WeddingBase.defaultConfig().couple;
+      return Object.assign({}, currentData, {
+        groom, bride,
+        initials: document.getElementById('initials').value || (groom[0] + ' & ' + bride[0]),
+        heroDate: document.getElementById('heroDate').value,
+        heroTime: document.getElementById('heroTime').value,
+        countdownDate: cd ? new Date(cd).toISOString() : currentData.countdownDate,
+        venueName: document.getElementById('venueName').value,
+        venueAddress: document.getElementById('venueAddress').value,
+        venueMapUrl: document.getElementById('venueMapUrl').value,
+        loveQuote: document.getElementById('loveQuote').value,
+        loveSign: document.getElementById('loveSign').value || (groom + ' & ' + bride),
+        couple: [
+          Object.assign({}, currentData.couple[0], {
+            name: groom,
+            role: document.getElementById('groomRole').value || 'Arooski',
+            desc: document.getElementById('groomDesc').value || 'Wiilka arooska'
+          }),
+          Object.assign({}, currentData.couple[1], {
+            name: bride,
+            role: document.getElementById('brideRole').value || 'Aroosadda',
+            desc: document.getElementById('brideDesc').value || 'Gabadha arooska'
+          })
+        ],
+        gallery: galleryImages.slice()
+      });
+    }
+
+    function saveAndGenerateQR() {
+      const key = document.getElementById('storageKey').value.trim() || 'index';
+      const data = collectData();
+      currentData = data;
+      WeddingStore.save(key, data);
+      lastQrUrl = QRLib.buildUrl(key, data);
+      QRLib.showQR('qrOutput', lastQrUrl);
+      updateQrNames();
+      return { key, data };
+    }
+
+    function autoSaveAndQR() {
+      saveAndGenerateQR();
+    }
+
+    async function handleImage(inputId, previewId, phId, setter) {
+      const file = document.getElementById(inputId).files[0];
+      if (!file) return;
+      const dataUrl = await ImageTools.fileToDataUrl(file, inputId === 'heroBgFile' ? 1200 : 800, 800);
+      showPreview(previewId, phId, dataUrl);
+      setter(dataUrl);
+      document.getElementById(inputId).value = '';
+      autoSaveAndQR();
+      showStatus('Sawirka waa la cusboonaysiiyay ✓', true);
+    }
+
+    document.getElementById('heroBgFile').addEventListener('change', function () {
+      handleImage('heroBgFile', 'heroBgPreview', 'heroBgPlaceholder', function (u) { currentData.heroBg = u; });
+    });
+    document.getElementById('groomPhotoFile').addEventListener('change', function () {
+      handleImage('groomPhotoFile', 'groomPhotoPreview', 'groomPhotoPlaceholder', function (u) {
+        if (!currentData.couple) currentData.couple = WeddingBase.defaultConfig().couple;
+        currentData.couple[0].photo = u;
+      });
+    });
+    document.getElementById('bridePhotoFile').addEventListener('change', function () {
+      handleImage('bridePhotoFile', 'bridePhotoPreview', 'bridePhotoPlaceholder', function (u) {
+        if (!currentData.couple) currentData.couple = WeddingBase.defaultConfig().couple;
+        currentData.couple[1].photo = u;
+      });
+    });
+    document.getElementById('galleryFiles').addEventListener('change', async function () {
+      const files = Array.from(this.files);
+      for (const f of files) {
+        galleryImages.push(await ImageTools.fileToDataUrl(f, 600, 600));
+      }
+      this.value = '';
+      renderGallery();
+      autoSaveAndQR();
+      showStatus('Gallery waa la cusboonaysiiyay ✓', true);
+    });
+    document.getElementById('musicFile').addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+      currentData.musicUrl = await ImageTools.readFile(file);
+      document.getElementById('musicName').textContent = file.name + ' ✓';
+      this.value = '';
+      autoSaveAndQR();
+      showStatus('Muusig waa la kaydiyay ✓', true);
+    });
+    document.getElementById('btnRemoveMusic').addEventListener('click', function () {
+      currentData.musicUrl = '';
+      document.getElementById('musicName').textContent = 'Muusig ma jiro — soo geli fayl MP3';
+      autoSaveAndQR();
+    });
+
+    document.getElementById('btnSave').addEventListener('click', function () {
+      const { key } = saveAndGenerateQR();
+      showStatus('Xogta waa la kaydiyay! QR code waa la cusboonaysiiyay. Key: ' + key, true);
+    });
+
+    document.getElementById('btnPreview').addEventListener('click', function () {
+      const { key } = saveAndGenerateQR();
+      window.open('class.html?w=' + encodeURIComponent(key), '_blank');
+    });
+
+    document.getElementById('btnDownloadQR').addEventListener('click', function () {
+      QRLib.downloadQR();
+    });
+
+    document.getElementById('btnCopyLink').addEventListener('click', function () {
+      if (!lastQrUrl) saveAndGenerateQR();
+      navigator.clipboard.writeText(lastQrUrl).then(function () {
+        showStatus('Link-ka waa la copy gareeyay!', true);
+      }).catch(function () {
+        prompt('Copy link-kan:', lastQrUrl);
+      });
+    });
+
+    // Auto-update QR names as user types
+    ['groom', 'bride'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', updateQrNames);
+    });
+
+    // Load saved + show QR immediately
+    const saved = WeddingStore.load('index');
+    if (saved) currentData = Object.assign(WeddingBase.defaultConfig(), saved);
+    loadForm(currentData);
+    saveAndGenerateQR();
+  </script>
+</body>
+</html>
